@@ -14,7 +14,7 @@ let NETWORK_TYPE = typeforce.compile({
   }
 })
 
-let BITCOIN = {
+let RAVENCOIN = {
   wif: 0x80,
   bip32: {
     public: 0x0488b21e,
@@ -212,7 +212,7 @@ BIP32.prototype.verify = function (hash, signature) {
 function fromBase58 (string, network) {
   let buffer = bs58check.decode(string)
   if (buffer.length !== 78) throw new TypeError('Invalid buffer length')
-  network = network || BITCOIN
+  network = network || RAVENCOIN
 
   // 4 bytes: version bytes
   let version = buffer.readUInt32BE(0)
@@ -262,7 +262,7 @@ function fromPrivateKey (privateKey, chainCode, network) {
     privateKey: UINT256_TYPE,
     chainCode: UINT256_TYPE
   }, { privateKey, chainCode })
-  network = network || BITCOIN
+  network = network || RAVENCOIN
 
   if (!ecc.isPrivate(privateKey)) throw new TypeError('Private key not in range [1, n)')
   return new BIP32(privateKey, null, chainCode, network)
@@ -273,7 +273,7 @@ function fromPublicKey (publicKey, chainCode, network) {
     publicKey: typeforce.BufferN(33),
     chainCode: UINT256_TYPE
   }, { publicKey, chainCode })
-  network = network || BITCOIN
+  network = network || RAVENCOIN
 
   // verify the X coordinate is a point on the curve
   if (!ecc.isPoint(publicKey)) throw new TypeError('Point is not on the curve')
@@ -284,9 +284,9 @@ function fromSeed (seed, network) {
   typeforce(typeforce.Buffer, seed)
   if (seed.length < 16) throw new TypeError('Seed should be at least 128 bits')
   if (seed.length > 64) throw new TypeError('Seed should be at most 512 bits')
-  network = network || BITCOIN
+  network = network || RAVENCOIN
 
-  let I = crypto.hmacSHA512('Bitcoin seed', seed)
+  let I = crypto.hmacSHA512('Ravencoin seed', seed)
   let IL = I.slice(0, 32)
   let IR = I.slice(32)
 
